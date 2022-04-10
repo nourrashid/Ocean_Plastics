@@ -1,0 +1,30 @@
+Clear Functions
+clear all
+close all
+Import the sorted 2010 Mismanaged Plastic Waste
+% Mismanaged plastic waste data was imported for the top 30 most polluting countries.
+MPWpC=xlsread('Jambeck et al 2015 Country List sorted.xlsx','M2:M31');
+[~, CountryList]=xlsread('Jambeck et al 2015 Country List sorted.xlsx','A2:A31');
+[~, OceanList]=xlsread('Jambeck et al 2015 Country List sorted.xlsx','O2:O31');
+% In this model, we will assume that only 0.5% of plastic waste ends up in the oceans.
+% This is based on Weiss et al. (2021) who claim that plastic influx values
+% have been inflated in previous literature, which gave rise to the
+% 'missing sink' concept.
+MPWOpC=0.005*MPWpC;
+Calculating the sum of plastic input per ocean
+MPWIO2010 = sum(MPWOpC(strcmp(OceanList,'Indian')));
+MPWAO2010 = sum(MPWOpC(strcmp(OceanList,'Atlantic')));
+MPWSPO2010 = sum(MPWOpC(strcmp(OceanList,'Pacific South')));
+MPWNPO2010 = sum(MPWOpC(strcmp(OceanList,'Pacific North')));
+Reconstructing historic plastic flux
+% We will assume that plastic pollution started in 1970 (Jambeck et al.2015), and a linear growth of plastic
+% was observed until 2010.
+% A for-loop will be used to reconstruct this.
+t=1970;
+for i=1:40;
+t(i+1)=t(i)+1;
+MPWIO(i+1) = MPWIO2010/40 * i;
+MPWAO(i+1) = MPWAO2010/40 * i;
+MPWSPO(i+1) = MPWSPO2010/40 * i;
+MPWNPO(i+1) = MPWNPO2010/40 * i;
+end
